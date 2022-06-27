@@ -1,9 +1,3 @@
 # smart-car
-didasidfh
-sadifahoi
-sadfkh
-
-s
-ss
-
-s
+## 基本功能
+前进，后退，左转，右转
