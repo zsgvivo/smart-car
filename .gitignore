@@ -5,6 +5,7 @@
 *.pydevproject
 .project
 .metadata
+.idea/
 bin/
 tmp/
 *.tmp
@@ -16,7 +17,7 @@ local.properties
 .classpath
 .settings/
 .loadpath
-
+pyqttest.py
 # External tool builders
 .externalToolBuilders/
 

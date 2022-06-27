@@ -7,3 +7,5 @@
 ```shell
 pyinstaller --windowed -F main.py
 ```
+
+你可能需要先通过pip安装PyQt6、pyinstaller等
