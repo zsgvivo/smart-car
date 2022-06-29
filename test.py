@@ -171,7 +171,7 @@ def GoTo(MyCar, Target, MyMap):
     path = FindPath(MyCar, Target, MyMap)
     for i in path:
         GoToNeighbor(MyCar, i, MyMap)
-    
+
 
             
 if __name__ == "__main__":
