@@ -24,22 +24,23 @@ class Car:
     def TurnRight(self):
         self.Angle -= 90
         self.Angle = self.Angle % 360
-    def AngleReset(self):
+    def TurnReset(self):
         if self.Angle == 0:
             return
         elif self.Angle == 90:
-            self.TurnRight(self)
+            self.TurnRight()
             return
         elif self.Angle == 180:
-            self.TurnRight(self)
-            self.TurnRight(self)
+            self.TurnRight()
+            self.TurnRight()
             return
         elif self.Angle == 270:
-            self.TurnLeft(self)
+            self.TurnLeft()
             return
     def move(self, distance):
-        self.Position.x += distance * math.cos(math.radians(self.Angle))
-        self.Position.y += distance * math.sin(math.radians(self.Angle))
+        self.Position.x += int(distance * math.cos(math.radians(self.Angle)))
+        self.Position.y += int(distance * math.sin(math.radians(self.Angle)))
+
 class Environment:#测试用
     def __init__(self, Map):# Map 是二维01数组,1表示该处有障碍
         self.Map = Map
@@ -48,18 +49,20 @@ class Environment:#测试用
             return OCCUPIED
         else:
             return AVAILABLE
+
 def generate_random_map(mapsize):
     map = []
     for i in range(mapsize):
         map.append([])
         for j in range(mapsize):
-            map[i].append(random.choices([0, 1], weights=[1, 0.5])[0])
+            map[i].append(random.choices([0, 1], weights=[1, 0.3])[0])
     map[0][0] = 0
+
     print("generate random map:")
-    # for i in range(mapsize):
     Print(map)
         # print("\n")
     return map
+
 def Detect(MyCar, MyMap, environment):
     global detection_cnt
     detection_cnt += 1
@@ -136,12 +139,12 @@ def GetBorder(MyMap):
     for i in range(MapSize):
         for j in range(MapSize):
             if IsBorder(MyMap, MyMap[i][j]):
-                border.append([i, j])
+                border.append(MyMap[i][j])
     return border
                 
 
 def GoToNeighbor(MyCar, Target, MyMap):
-    if MyCar.Position.x == Point.x and MyCar.Position.y == Point.y:
+    if MyCar.Position.x == Target.x and MyCar.Position.y == Target.y:
         return
     if Target.state != AVAILABLE:
         return
@@ -164,35 +167,78 @@ def GoToNeighbor(MyCar, Target, MyMap):
             MyCar.TurnRight
             MyCar.move(1)
 
-def FindPath(MyCar, Target, MyMap):
-    return
+def FindPath(Location, Target, MyMap):
+    if Target.state != AVAILABLE:
+        return []
+    path = []
+    if Location.x == Target.x and Location.y == Target.y:
+        return path
+    queue = [Location]
+    visited = [[0 for i in range(MapSize)] for j in range(MapSize)]
+    pathfrom = [[Point(-1, -1) for i in range(MapSize)] for j in range(MapSize)]
+    visited[Location.x][Location.y] = 1
+    while queue:
+        point = queue.pop(0)
+        neighbor = GetNeighbor(MyMap, point)
+        for i in neighbor:
+            if i.state == AVAILABLE and visited[i.x][i.y] == 0:
+                queue.append(i)
+                pathfrom[i.x][i.y] = point
+                visited[i.x][i.y] = 1
+                if i.x == Target.x and i.y == Target.y:
+                    path.append(i)
+                    tem = pathfrom[i.x][i.y]
+                    while tem.x != Location.x or tem.y != Location.y:
+                        path.append(tem)
+                        tem = pathfrom[tem.x][tem.y]
+                    path.reverse()
+                    return path
+
+                
 
 def GoTo(MyCar, Target, MyMap):
-    path = FindPath(MyCar, Target, MyMap)
-    for i in path:
-        GoToNeighbor(MyCar, i, MyMap)
-
-
+    path = FindPath(MyCar.Position, Target, MyMap)
+    if path:
+        for i in path:
+            GoToNeighbor(MyCar, i, MyMap)
+    
+def DetectAround(MyCar, MyMap, environment):
+    Detect(MyCar, MyMap, environment)
+    MyCar.TurnLeft()
+    Detect(MyCar, MyMap, environment)
+    MyCar.TurnLeft()
+    Detect(MyCar, MyMap, environment)    
+    MyCar.TurnLeft()
+    Detect(MyCar, MyMap, environment)
+    MyCar.TurnLeft()
             
 if __name__ == "__main__":
     #initalize
     MyEnvironment = Environment(generate_random_map(MapSize))
     MyMap = [] #目前已知的地图信息
     MyCar = Car(Point(0, 0), 0)
-    MapState = []
     for i in range(MapSize):
         MyMap.append([])
         for j in range(MapSize):
             MyMap[i].append(Point(i, j))
     MyMap[0][0].state = AVAILABLE
-
     PrintState(MyMap)
     Detect(MyCar, MyMap, MyEnvironment)
     PrintState(MyMap)
     MyCar.TurnLeft()
     Detect(MyCar, MyMap, MyEnvironment)
     PrintState(MyMap)
-    print(GetBorder(MyMap))
+    # print(GetBorder(MyMap))
+    for i in range(10):
+        for p in GetBorder(MyMap):
+            GoTo(MyCar, p, MyMap)
+            DetectAround(MyCar, MyMap, MyEnvironment)
+            PrintState(MyMap)
+
     
-    
+    # path = FindPath(MyCar.Position, MyMap[5][0], MyMap)
+    # for i in path:
+    #     print(i.x)
+    #     print(i.y)
+    #     print("\n")
 
