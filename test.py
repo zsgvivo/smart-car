@@ -211,6 +211,13 @@ def DetectAround(MyCar, MyMap, environment):
     MyCar.TurnLeft()
     Detect(MyCar, MyMap, environment)
     MyCar.TurnLeft()
+
+def AllExplored(MyMap):
+    for i in range(MapSize):
+        for j in range(MapSize):
+            if MyMap[i][j].state == UNEXPLORED:
+                return False
+    return True
             
 if __name__ == "__main__":
     #initalize
@@ -234,6 +241,8 @@ if __name__ == "__main__":
             GoTo(MyCar, p, MyMap)
             DetectAround(MyCar, MyMap, MyEnvironment)
             PrintState(MyMap)
+        if(AllExplored(MyMap)):
+            break
 
     
     # path = FindPath(MyCar.Position, MyMap[5][0], MyMap)
