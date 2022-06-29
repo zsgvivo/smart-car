@@ -1,12 +1,12 @@
 module fdiv(clk0, clk1, clk2);
    input clk0;
-	output clk1;//1ms 
-	output clk2;//2ms
+	output clk1;
+	output clk2;
 	
-	reg clk1;
-	reg clk2;
-	reg [19:0]temp1;
-	reg [19:0]temp2;
+	reg clk1;//顺时针
+	reg clk2;//逆时针
+	reg [19:0]temp1;//clk1
+	reg [19:0]temp2;//clk2
 	
 	
 	always @ (posedge clk0)
@@ -14,23 +14,23 @@ module fdiv(clk0, clk1, clk2);
 	   temp1 <= temp1 + 20'b1;
 		temp2 <= temp2 + 20'b1;
 		
-		if(clk1 == 1'b1 && temp1 == 60000)
+		if(clk1 == 1'b1 && temp1 == 53700)
 		begin
 		   clk1 <= 1'b0;
 			temp1 <= 20'b0;
 		end
-		else if(clk1 == 1'b0 && temp1 == 940000)
+		else if(clk1 == 1'b0 && temp1 == 946300)
 		begin
 		   clk1 <= 1'b1;
 			temp1 <= 20'b0;
 		end
 		
-		if(clk2 == 1'b1 && temp2 == 90000)
+		if(clk2 == 1'b1 && temp2 == 100000)
 		begin
 		   clk2 <= 1'b0;
 			temp2 <= 20'b0;
 		end
-		else if(clk2 == 1'b0 && temp2 == 910000)
+		else if(clk2 == 1'b0 && temp2 == 900000)
 		begin
 		   clk2 <= 1'b1;
 			temp2 <= 20'b0;

@@ -38,26 +38,24 @@ module ultrasound(clk0, echo, clk3, ssig);
    always @ (posedge clk0)	
 	begin
 	   echo2 = echo1;
-		echo1 = echo;
-		
-		case ({echo2, echo1})
-		2'b01 : count = count + 1;
-		2'b11 : count = count + 1;
-		2'b10 : 
-		begin
-		   if(count <= standard)
-			begin 
-			   ssig = 1'b1; 
-				//count = 0;
-			end
-			else 
-			begin 
-			   ssig = 1'b0;
-				//count = 0;
-			end
-		end
-		2'b00 : count = 0;
-		endcase
+	   echo1 = echo;
+	   
+	   case ({echo2, echo1})
+	   2'b01 : count = count + 1;
+	   2'b11 : count = count + 1;
+	   2'b10 : 
+	   begin
+	      if(count <= standard)
+	   	begin 
+	   	   ssig = 1'b1; 
+	   	end
+	   	else 
+	   	begin 
+	   	   ssig = 1'b0;
+	   	end
+	   end
+	   2'b00 : count = 0;
+	   endcase
 	end
 endmodule
 		   
