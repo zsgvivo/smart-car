@@ -20,8 +20,23 @@ class Car:
         self.Angle = Angle
     def TurnLeft(self):
         self.Angle += 90
+        self.Angle = self.Angle % 360
     def TurnRight(self):
         self.Angle -= 90
+        self.Angle = self.Angle % 360
+    def AngleReset(self):
+        if self.Angle == 0:
+            return
+        elif self.Angle == 90:
+            self.TurnRight(self)
+            return
+        elif self.Angle == 180:
+            self.TurnRight(self)
+            self.TurnRight(self)
+            return
+        elif self.Angle == 270:
+            self.TurnLeft(self)
+            return
     def move(self, distance):
         self.Position.x += distance * math.cos(math.radians(self.Angle))
         self.Position.y += distance * math.sin(math.radians(self.Angle))
@@ -80,9 +95,11 @@ def Detect(MyCar, MyMap, environment):
             if MyMap[x][y].state == OCCUPIED:
                 break
             y -= 1
+
 def Print(list):
     for i in range(len(list)):
         print(list[i])
+
 def PrintState(MyMap):
     statemap = []
     for i in range(MapSize):
@@ -91,6 +108,70 @@ def PrintState(MyMap):
             statemap[i].append(MyMap[i][j].state)
     print("state map after "+str(detection_cnt)+" detection" )
     Print(statemap)
+
+def GetNeighbor(MyMap, point):
+    neighbor = []
+    if point.x > 0:
+        neighbor.append(MyMap[point.x - 1][point.y])
+    if point.x < MapSize - 1:
+        neighbor.append(MyMap[point.x + 1][point.y])
+    if point.y > 0:
+        neighbor.append(MyMap[point.x][point.y - 1])
+    if point.y < MapSize - 1:
+        neighbor.append(MyMap[point.x][point.y + 1])
+    return neighbor
+
+def IsBorder(MyMap, point):
+    if MyMap[point.x][point.y].state != AVAILABLE:
+        return False
+    else:
+        neighbor = GetNeighbor(MyMap, point)
+        for i in neighbor:
+            if i.state == UNEXPLORED:
+                return True
+    return False
+    
+def GetBorder(MyMap):
+    border = []
+    for i in range(MapSize):
+        for j in range(MapSize):
+            if IsBorder(MyMap, MyMap[i][j]):
+                border.append([i, j])
+    return border
+                
+
+def GoToNeighbor(MyCar, Target, MyMap):
+    if MyCar.Position.x == Point.x and MyCar.Position.y == Point.y:
+        return
+    if Target.state != AVAILABLE:
+        return
+    if Target.x == MyCar.Position.x:
+        if Target.y > MyCar.Position.y:
+            MyCar.TurnReset()
+            MyCar.TurnLeft()
+            MyCar.move(1)
+        else:
+            MyCar.TurnReset()
+            MyCar.TurnRight()
+            MyCar.move(1)
+    elif Target.y == MyCar.Position.y:
+        if Target.x > MyCar.Position.x:
+            MyCar.TurnReset()
+            MyCar.move(1)
+        else:
+            MyCar.TurnReset()
+            MyCar.TurnRight()
+            MyCar.TurnRight
+            MyCar.move(1)
+
+def FindPath(MyCar, Target, MyMap):
+    return
+
+def GoTo(MyCar, Target, MyMap):
+    path = FindPath(MyCar, Target, MyMap)
+    for i in path:
+        GoToNeighbor(MyCar, i, MyMap)
+    
 
             
 if __name__ == "__main__":
@@ -108,6 +189,10 @@ if __name__ == "__main__":
     PrintState(MyMap)
     Detect(MyCar, MyMap, MyEnvironment)
     PrintState(MyMap)
+    MyCar.TurnLeft()
+    Detect(MyCar, MyMap, MyEnvironment)
+    PrintState(MyMap)
+    print(GetBorder(MyMap))
     
     
 
