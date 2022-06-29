@@ -40,6 +40,7 @@ class Car:
     def move(self, distance):
         self.Position.x += int(distance * math.cos(math.radians(self.Angle)))
         self.Position.y += int(distance * math.sin(math.radians(self.Angle)))
+        print("Current Position:", self.Position)
 
 class Environment:#测试用
     def __init__(self, Map):# Map 是二维01数组,1表示该处有障碍
@@ -164,7 +165,7 @@ def GoToNeighbor(MyCar, Target, MyMap):
         else:
             MyCar.TurnReset()
             MyCar.TurnRight()
-            MyCar.TurnRight
+            MyCar.TurnRight()
             MyCar.move(1)
 
 def FindPath(Location, Target, MyMap):
@@ -197,6 +198,8 @@ def FindPath(Location, Target, MyMap):
                 
 
 def GoTo(MyCar, Target, MyMap):
+    print("GoTo:")
+    print(Target.x, Target.y)
     path = FindPath(MyCar.Position, Target, MyMap)
     if path:
         for i in path:
@@ -235,19 +238,15 @@ if __name__ == "__main__":
     MyCar.TurnLeft()
     Detect(MyCar, MyMap, MyEnvironment)
     PrintState(MyMap)
+    havevisited = []
     # print(GetBorder(MyMap))
-    for i in range(10):
+    # while True:
+    for i in range(100):
         for p in GetBorder(MyMap):
-            GoTo(MyCar, p, MyMap)
-            DetectAround(MyCar, MyMap, MyEnvironment)
-            PrintState(MyMap)
+            if p not in havevisited:
+                GoTo(MyCar, p, MyMap)
+                havevisited.append(p)
+                DetectAround(MyCar, MyMap, MyEnvironment)
+                PrintState(MyMap)
         if(AllExplored(MyMap)):
             break
-
-    
-    # path = FindPath(MyCar.Position, MyMap[5][0], MyMap)
-    # for i in path:
-    #     print(i.x)
-    #     print(i.y)
-    #     print("\n")
-
