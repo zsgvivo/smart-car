@@ -56,7 +56,7 @@ def generate_random_map(mapsize):
     for i in range(mapsize):
         map.append([])
         for j in range(mapsize):
-            map[i].append(random.choices([0, 1], weights=[1, 0.3])[0])
+            map[i].append(random.choices([0, 1], weights=[1, 0.8])[0])
     map[0][0] = 0
 
     print("generate random map:")
@@ -241,7 +241,7 @@ if __name__ == "__main__":
     havevisited = []
     # print(GetBorder(MyMap))
     # while True:
-    for i in range(100):
+    for i in range(36):
         for p in GetBorder(MyMap):
             if p not in havevisited:
                 GoTo(MyCar, p, MyMap)

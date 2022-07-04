@@ -46,6 +46,8 @@
 *.qws
 *.rpt
 *.smsg
+# *.java
+*.class
 *.sof
 *.sopc_builder
 *.summary
