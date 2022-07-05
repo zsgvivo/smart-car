@@ -56,6 +56,7 @@ module action(clk0, clk1, clk2, clk3, clk4, clk5, clk6, echo, rxdone, rxdata, rx
    //HC_05返回信息检测
 	always @ (posedge clk0)
 	begin
+	   cc <= 0;
 		if(rxdone == 1)
 		begin
 	      if(rxdata == 59)
@@ -66,7 +67,6 @@ module action(clk0, clk1, clk2, clk3, clk4, clk5, clk6, echo, rxdone, rxdata, rx
 		   end
 		   else
 		   begin
-			   cc <= 0;
 		      cnt <= cnt + 1;
 		   end
 		   
@@ -88,61 +88,62 @@ module action(clk0, clk1, clk2, clk3, clk4, clk5, clk6, echo, rxdone, rxdata, rx
 		   'd14 : commend[119:112] <= rxdata;
 		   'd15 : commend[127:120] <= rxdata;
 		   endcase
+			
 		end
 	end 
 	
 	//发送探测角度的信号
-	always @ (posedge clk6)
-	begin
-	   txdetectangle <= 8'b00110001;
-	   if(en_changesignal == 1)
-		begin
-		   en_changesignal <= ~en_changesignal;
-	      txangle_en <= 1;
-		end
-		else 
-		begin
-	      en_changesignal <= ~en_changesignal;
-	      txangle_en <= 0;
-		end
-	end
+	//always @ (posedge clk6)
+	//begin
+	//   txdetectangle <= 8'b00110001;
+	//   if(en_changesignal == 1)
+	//	begin
+	//	   en_changesignal <= ~en_changesignal;
+	//      txangle_en <= 1;
+	//	end
+	//	else 
+	//	begin
+	//      en_changesignal <= ~en_changesignal;
+	//      txangle_en <= 0;
+	//	end
+	//end
 	
 	//GY-26角度传感器返回值检测
-	always @ (posedge clk0)
-	begin
-		if(rxdone_angle == 1)
-		begin
-	      if(rxdata_angle == 13)
-		   begin
-		      angle_info <= angle_commend;
-		      angle_commend <= 0;
-		   	angle_cnt <= 0;
-		   end
-		   else
-		   begin
-		      angle_cnt <= angle_cnt + 1;
-		   end
-		   
-		   case (angle_cnt)
-		   'd0 : angle_commend[7:0] <= rxdata_angle;
-		   'd1 : angle_commend[15:8] <= rxdata_angle;
-		   'd2 : angle_commend[23:16] <= rxdata_angle;
-		   'd3 : angle_commend[31:24] <= rxdata_angle;
-		   'd4 : angle_commend[39:32] <= rxdata_angle;
-		   'd5 : angle_commend[47:40] <= rxdata_angle;
-		   'd6 : angle_commend[55:48] <= rxdata_angle;
-		   'd7 : angle_commend[63:56] <= rxdata_angle;
-		   'd8 : angle_commend[71:64] <= rxdata_angle;
-		   'd9 : angle_commend[79:72] <= rxdata_angle;
-		   'd10 : angle_commend[87:80] <= rxdata_angle;
-		   'd11 : angle_commend[95:88] <= rxdata_angle;
-		   'd12 : angle_commend[103:96] <= rxdata_angle;
-		   'd13 : angle_commend[111:104] <= rxdata_angle;
-		   'd14 : angle_commend[119:112] <= rxdata_angle;
-		   'd15 : angle_commend[127:120] <= rxdata_angle;
-		   endcase
-		end
-	end 
+	//always @ (posedge clk0)
+	//begin
+	//	if(rxdone_angle == 1)
+	//	begin
+	//      if(rxdata_angle == 13)
+	//	   begin
+	//	      angle_info <= angle_commend;
+	//	      angle_commend <= 0;
+	//	   	angle_cnt <= 0;
+	//	   end
+	//	   else
+	//	   begin
+	//	      angle_cnt <= angle_cnt + 1;
+	//	   end
+	//	   
+	//	   case (angle_cnt)
+	//	   'd0 : angle_commend[7:0] <= rxdata_angle;
+	//	   'd1 : angle_commend[15:8] <= rxdata_angle;
+	//	   'd2 : angle_commend[23:16] <= rxdata_angle;
+	//	   'd3 : angle_commend[31:24] <= rxdata_angle;
+	//	   'd4 : angle_commend[39:32] <= rxdata_angle;
+	//	   'd5 : angle_commend[47:40] <= rxdata_angle;
+	//	   'd6 : angle_commend[55:48] <= rxdata_angle;
+	//	   'd7 : angle_commend[63:56] <= rxdata_angle;
+	//	   'd8 : angle_commend[71:64] <= rxdata_angle;
+	//	   'd9 : angle_commend[79:72] <= rxdata_angle;
+	//	   'd10 : angle_commend[87:80] <= rxdata_angle;
+	//	   'd11 : angle_commend[95:88] <= rxdata_angle;
+	//	   'd12 : angle_commend[103:96] <= rxdata_angle;
+	//	   'd13 : angle_commend[111:104] <= rxdata_angle;
+	//	   'd14 : angle_commend[119:112] <= rxdata_angle;
+	//	   'd15 : angle_commend[127:120] <= rxdata_angle;
+	//	   endcase
+	//	end
+	//end 
 	
 	//always @ (barri)
 	//begin
@@ -256,8 +257,10 @@ module action(clk0, clk1, clk2, clk3, clk4, clk5, clk6, echo, rxdone, rxdata, rx
 		   rightw1 = 1'b0;
 		   rightw2 = 1'b0;
 			
+		   test <= cc[7:0];
+			
 			uart_tx_en <= 1'b0;
-			angle_infostart <= angle_info;//初始角度值赋值
+			//angle_infostart <= angle_info;//初始角度值赋值
 			inicount <= countall;
 			
 		   case ({echo2, echo1})
@@ -268,6 +271,8 @@ module action(clk0, clk1, clk2, clk3, clk4, clk5, clk6, echo, rxdone, rxdata, rx
 	         if(dete == 1)
 	      	begin 
 		   	   countall <= count;
+					dete <= 1'b0;
+					count <= 0;
 		   		//uart_tx_en <= 1'b1;
 		   		//uart_tx_data <= 48 + barri;
 	      	end
@@ -392,7 +397,7 @@ module action(clk0, clk1, clk2, clk3, clk4, clk5, clk6, echo, rxdone, rxdata, rx
 		   rightw2 = 1'b0;
 			
 			uart_tx_en <= 1'b0;
-			angle_infostart <= angle_info;//初始角度值赋值
+			//angle_infostart <= angle_info;//初始角度值赋值
 			inicount <= countall;
 			
 			if(cc[31:24] == 100)
@@ -405,6 +410,8 @@ module action(clk0, clk1, clk2, clk3, clk4, clk5, clk6, echo, rxdone, rxdata, rx
 	            if(dete == 1)
 	         	begin 
 		   		   countall <= count;
+						count <= 0;
+						dete <= 0;
 		   			uart_tx_en <= 1'b1;
 		   			uart_tx_data <= 48 + barri;
 	         	end
@@ -426,38 +433,37 @@ module action(clk0, clk1, clk2, clk3, clk4, clk5, clk6, echo, rxdone, rxdata, rx
 		   rightw2 = ~clk2;
 
 			uart_tx_en <= 1'b0;
-			inicount <= countall;
 			
-			if(ainfo > ainfostart)
-			begin
-			   if(ainfo - ainfostart >= 50 && ainfo - ainfostart < 3000)
-				begin
-				   state <= wleft;
-				end
-				else if (3600 + ainfostart - ainfo >= 50)
-				begin
-				   state <= wrigh;
-			   end
-				else
-				begin
-				   state <= aforw;
-				end
-			end
-			else
-			begin
-			   if(ainfostart - ainfo >= 50 && ainfostart - ainfo < 3000)
-				begin
-				   state <= wrigh;
-				end
-				else if (3600 - ainfostart + ainfo >= 50)
-				begin
-				   state <= wleft;
-			   end
-				else
-				begin
-				   state <= aforw;
-				end
-			end
+			//if(ainfo > ainfostart)
+			//begin
+			//   if(ainfo - ainfostart >= 50 && ainfo - ainfostart < 3000)
+			//	begin
+			//	   state <= wleft;
+			//	end
+			//	else if (3600 + ainfostart - ainfo >= 50)
+			//	begin
+			//	   state <= wrigh;
+			//   end
+			//	else
+			//	begin
+			//	   state <= aforw;
+			//	end
+			//end
+			//else
+			//begin
+			//   if(ainfostart - ainfo >= 50 && ainfostart - ainfo < 3000)
+			//	begin
+			//	   state <= wrigh;
+			//	end
+			//	else if (3600 - ainfostart + ainfo >= 50)
+			//	begin
+			//	   state <= wleft;
+			//   end
+			//	else
+			//	begin
+			//	   state <= aforw;
+			//	end
+			//end
 			
 	      case ({echo2, echo1})
 	      2'b01 : begin dete = 1'b1; count = count + 1; state <= aforw; uart_tx_en <= 1'b0;end
@@ -468,12 +474,16 @@ module action(clk0, clk1, clk2, clk3, clk4, clk5, clk6, echo, rxdone, rxdata, rx
 	      	begin
 				   countall <= count;
 				   state <= astop;
+					count <= 0;
+					dete <= 0;
 					uart_tx_en <= 1'b1;
 					uart_tx_data <= 90;
 	      	end
 				else
 				begin
 				   state <= aforw;
+					count <= 0;
+					dete <= 0;
 					uart_tx_en <= 1'b0;
 				end
 			end
@@ -490,22 +500,22 @@ module action(clk0, clk1, clk2, clk3, clk4, clk5, clk6, echo, rxdone, rxdata, rx
 			
 			uart_tx_en <= 1'b0;
 			
-			if(angle_info - angle_infostart >= 850 && angle_info - angle_infostart <= 950)
-			begin
-			   state <= astop;
-				uart_tx_en <= 1'b1;
-				uart_tx_data <= 90;
-			end
-			else if(angle_infostart - angle_info >= 2650 && angle_infostart - angle_info <= 2750)
-			begin
-			   state <= astop;
-				uart_tx_en <= 1'b1;
-				uart_tx_data <= 90;
-			end
-			else
-			begin
-			   state <= aleft;
-			end
+			//if(angle_info - angle_infostart >= 850 && angle_info - angle_infostart <= 950)
+			//begin
+			//   state <= astop;
+			//	uart_tx_en <= 1'b1;
+			//	uart_tx_data <= 90;
+			//end
+			//else if(angle_infostart - angle_info >= 2650 && angle_infostart - angle_info <= 2750)
+			//begin
+			//   state <= astop;
+			//	uart_tx_en <= 1'b1;
+			//	uart_tx_data <= 90;
+			//end
+			//else
+			//begin
+			//   state <= aleft;
+			//end
 			
 			count = 0;
 			dete = 1'b0;
@@ -520,27 +530,25 @@ module action(clk0, clk1, clk2, clk3, clk4, clk5, clk6, echo, rxdone, rxdata, rx
 			
 			uart_tx_en <= 1'b0;
 			
-			if(angle_info - angle_infostart >= 2650 && angle_info - angle_infostart <= 2750)
-			begin
-			   state <= astop;
-				uart_tx_en <= 1'b1;
-				uart_tx_data <= 90;
-			end
-			else if(angle_infostart - angle_info >= 850 && angle_infostart - angle_info <= 950)
-			begin
-			   state <= astop;	
-				uart_tx_en <= 1'b1;
-				uart_tx_data <= 90;
-			end
-			else
-			begin
-			   state <= arigh;
-			end
+			//if(angle_info - angle_infostart >= 2650 && angle_info - angle_infostart <= 2750)
+			//begin
+			//   state <= astop;
+			//	uart_tx_en <= 1'b1;
+			//	uart_tx_data <= 90;
+			//end
+			//else if(angle_infostart - angle_info >= 850 && angle_infostart - angle_info <= 950)
+			//begin
+			//   state <= astop;	
+			//	uart_tx_en <= 1'b1;
+			//	uart_tx_data <= 90;
+			//end
+			//else
+			//begin
+			//   state <= arigh;
+			//end
 			
 			count = 0;
 			dete = 1'b0;
-			
-		   test <= angle_info[23:16];
 		end
 		
 		else if (state == wleft)
@@ -552,28 +560,28 @@ module action(clk0, clk1, clk2, clk3, clk4, clk5, clk6, echo, rxdone, rxdata, rx
 			
 			uart_tx_en <= 1'b0;
 			
-			if(ainfo > ainfostart)
-			begin
-			   if(ainfo - ainfostart < 5 || 3600 + ainfostart - ainfo < 5)
-				begin
-				   state <= aforw;
-				end
-				else
-				begin
-				   state <= wleft;
-				end
-			end
-			else
-			begin
-				if(ainfostart - ainfo < 5 || 3600 - ainfostart + ainfo < 5)
-				begin
-				   state <= aforw;
-				end
-				else
-				begin
-				   state <= wleft;
-				end
-			end
+			//if(ainfo > ainfostart)
+			//begin
+			//   if(ainfo - ainfostart < 5 || 3600 + ainfostart - ainfo < 5)
+			//	begin
+			//	   state <= aforw;
+			//	end
+			//	else
+			//	begin
+			//	   state <= wleft;
+			//	end
+			//end
+			//else
+			//begin
+			//	if(ainfostart - ainfo < 5 || 3600 - ainfostart + ainfo < 5)
+			//	begin
+			//	   state <= aforw;
+			//	end
+			//	else
+			//	begin
+			//	   state <= wleft;
+			//	end
+			//end
 			
 			count = 0;
 			dete = 1'b0;
@@ -588,28 +596,28 @@ module action(clk0, clk1, clk2, clk3, clk4, clk5, clk6, echo, rxdone, rxdata, rx
 
 			uart_tx_en <= 1'b0;
 			
-			if(ainfo > ainfostart)
-			begin
-			   if(ainfo - ainfostart < 5 || 3600 + ainfostart - ainfo < 5)
-				begin
-				   state <= aforw;
-				end
-				else
-				begin
-				   state <= wrigh;
-				end
-			end
-			else
-			begin
-				if(ainfostart - ainfo < 5 || 3600 - ainfostart + ainfo < 5)
-				begin
-				   state <= aforw;
-				end
-				else
-				begin
-				   state <= wrigh;
-				end
-			end
+			//if(ainfo > ainfostart)
+			//begin
+			//   if(ainfo - ainfostart < 5 || 3600 + ainfostart - ainfo < 5)
+			//	begin
+			//	   state <= aforw;
+			//	end
+			//	else
+			//	begin
+			//	   state <= wrigh;
+			//	end
+			//end
+			//else
+			//begin
+			//	if(ainfostart - ainfo < 5 || 3600 - ainfostart + ainfo < 5)
+			//	begin
+			//	   state <= aforw;
+			//	end
+			//	else
+			//	begin
+			//	   state <= wrigh;
+			//	end
+			//end
 			
 			count = 0;
 			dete = 1'b0;
