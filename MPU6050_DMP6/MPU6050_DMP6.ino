@@ -47,7 +47,8 @@ THE SOFTWARE.
 // I2Cdev and MPU6050 must be installed as libraries, or else the .cpp/.h files
 // for both classes must be in the include path of your project
 #include "I2Cdev.h"
-
+// #include <iomanip>
+#include <string.h>
 #include "MPU6050_6Axis_MotionApps20.h"
 //#include "MPU6050.h" // not necessary if using MotionApps include file
 
@@ -283,11 +284,34 @@ void loop() {
 
         #ifdef OUTPUT_READABLE_YAWPITCHROLL
             // display Euler angles in degrees
+            
             mpu.dmpGetQuaternion(&q, fifoBuffer);
             mpu.dmpGetGravity(&gravity, &q);
             mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
             // Serial.print("ypr\t");
-            Serial.println(ypr[0] * 180/M_PI);
+            float a = ypr[0];
+            String str = String(a);
+            if (a >= 0)
+            {
+              str = str.substring(0);
+              int tmp = str.length();
+              for(int i = 0; i < 6 - tmp; i++){
+                  str = '0' + str;
+              }
+              str = '+' + str;
+            }
+            else{
+              str = str.substring(1);
+              // cout << str << '|' << str.length() << endl;
+              int tmp = str.length();
+              for(int i = 0; i < 6 - tmp; i++){
+                  str = '0' + str;
+                  // cout << str <<endl;
+              }
+              str = '-' + str;
+            }
+            Serial.println(str);
+            // Serial.println(ypr[0] * 180/M_PI);
             // Serial.print("\t");
             // Serial.print(ypr[1] * 180/M_PI);
             // Serial.print("\t");
