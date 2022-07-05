@@ -289,7 +289,7 @@ void loop() {
             mpu.dmpGetGravity(&gravity, &q);
             mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
             // Serial.print("ypr\t");
-            float a = ypr[0];
+            float a = ypr[0] * 180/M_PI;
             String str = String(a);
             if (a >= 0)
             {
