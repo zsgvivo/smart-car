@@ -30,6 +30,24 @@ public class Car {
             turnleft();
         }
     }
+    public void turnto(int angle){
+        if((Angle - angle) % 360 == 0){
+            return;
+        }
+        if((Angle - angle - 90) % 360 == 0){
+            turnright();
+            return;
+        }
+        if((Angle - angle - 270) % 360 == 0){
+            turnleft();
+            return;
+        }
+        if((Angle - angle - 180) % 360 == 0){
+            turnleft();
+            turnleft();
+            return;
+        }
+    }
     public void move(int dist){
         Position.x += (int)(dist * Math.cos(Angle * Math.PI / 180));
         Position.y += (int)(dist * Math.sin(Angle * Math.PI / 180));
